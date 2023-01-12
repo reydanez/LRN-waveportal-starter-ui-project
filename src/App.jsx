@@ -108,6 +108,17 @@ const App = () => {
          * Store our data in React State
          */
         setAllWaves(wavesCleaned);
+
+        // listen for new waves
+        wavePortalContract.on("NewWave", (from, timestamp, message) => {
+          console.log("NewWave", from, timestamp, message);
+
+          setAllWaves(prevState => [...prevState, {
+            address: from,
+            timestamp: new Date(timestamp * 1000),
+            message: message
+          }]);
+        });
       } else {
         console.log("Ethereum object does not exist!");
       }
@@ -142,8 +153,9 @@ const App = () => {
         
         /*
         * Execute the actual wave from your smart contract
+        * "gaslimit" set here makes the user pay a set amount of gas of 1,000,000. And, if they don't use all of it in the transaction they'll automatically be refunded
         */
-        const waveTxn = await wavePortalContract.wave(msgAdvice);
+        const waveTxn = await wavePortalContract.wave(msgAdvice, { gasLimit: 1000000 });
         console.log("Message sent was: %s", msgAdvice);
         console.log("Mining...", waveTxn.hash);
 
@@ -163,6 +175,7 @@ const App = () => {
       console.log(error);
     }
   };
+
   
   /*
    * The passed callback function will be run when the page loads.
@@ -173,6 +186,8 @@ const App = () => {
     if (account !== null) {
       setCurrentAccount(account);
     }
+
+    getAllWaves();
   }, []);
 
   return (
@@ -184,13 +199,13 @@ const App = () => {
         </div>
 
         <div className="bio">
-        Nice to see you at my wave portal! A bit about me: coding 💻 and hooping 🏀 are my passions. If you're a REAL one: connect your Ethereum wallet, type a friendly word of advice, and send me a wave!
+        Nice to see you at my wave portal! A bit about me: coding 💻 and hooping 🏀 are my passions. I enjoy interacting and learning from others, so I'd love to hear from you! Feel free to interact with me by connecting your Ethereum wallet, type me your favorite quote or word of advice (about anything!), and then click to wave at me with this message!
         </div>
         <br/>
         <label>Your friendly message: </label>
         <input id="advice" name="advice" placeholder="Type a word of advice here" onChange={handleChange} value={msgAdvice} />
         <button className="waveButton" onClick={wave}>
-          Wave at Me
+          Wave At Me
         </button>
 
         {/*
@@ -202,6 +217,11 @@ const App = () => {
           </button>
         )}
 
+        <br />
+        <br />
+        <div className="header">
+        Wave Portal History
+        </div>
         {allWaves.map((wave, index) => {
           return (
             <div key={index} style={{ backgroundColor: "OldLace", marginTop: "16px", padding: "8px" }}>
