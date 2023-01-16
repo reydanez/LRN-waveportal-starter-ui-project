@@ -49,7 +49,7 @@ const App = () => {
   /**
    * Create a variable here that holds the contract address after you deploy!
    */
-  const contractAddress = "0xaf5641e287aAd6cb92bB5586a3";
+  const contractAddress = "0xaf5641e287aAd6cb92bB5586a372Af560D20EF1A";
   /**
    * Create a variable here that references the abi content!
    */
@@ -220,7 +220,7 @@ const App = () => {
         <br />
         <br />
         <div className="header">
-        Wave Portal History
+        Wave & Message History
         </div>
         {allWaves.map((wave, index) => {
           return (
