@@ -59,7 +59,7 @@ const App = () => {
     try {
       const ethereum = getEthereumObject();
       if(!ethereum) {
-        alert("Get MetaMask!");
+        alert("The MetaMask browser extension is required in order to connect!");
         return;
       }
 
@@ -69,6 +69,7 @@ const App = () => {
 
       console.log("Connected ", accounts[0]);
       setCurrentAccount(accounts[0]);
+      getAllWaves();
     } catch(error) {
       console.error(error);
     }
@@ -217,12 +218,16 @@ const App = () => {
           </button>
         )}
 
+        {currentAccount && (
+          <div id="parent">
+            
         <br />
         <br />
         <div className="header">
-        Wave & Message History
+        Wave Sender History
         </div>
-        {allWaves.map((wave, index) => {
+        {allWaves?.length > 0 && 
+          allWaves.map((wave, index) => {
           return (
             <div key={index} style={{ backgroundColor: "OldLace", marginTop: "16px", padding: "8px" }}>
               <div>Address: {wave.address}</div>
@@ -230,6 +235,13 @@ const App = () => {
               <div>Message: {wave.message}</div>
             </div>)
         })}
+
+        {allWaves?.length === 0 && 
+          <div>No Waves Exist!</div>
+        }
+            
+          </div>
+        )}
       </div>
     </div>
   );
